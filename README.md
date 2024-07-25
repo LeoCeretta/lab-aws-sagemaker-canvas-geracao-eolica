@@ -42,21 +42,31 @@ Antes de começar, certifique-se de ter uma conta na AWS. Se precisar de ajuda p
 -   Após treinamento, as seguintes métricas foram extraídas:
 ![alt text](image.png)
 
--   A métrica Avg. wQL (Average Weighted Quantile Loss) é usada para avaliar a precisão de modelos de previsão probabilística, particularmente em quantiles. Quando você obtém um valor Avg. wQL de 0.035, isso indica que, em média, o modelo tem um erro ponderado de 0.035 ao prever os quantis.
+-   A métrica `Avg. wQL` (Average Weighted Quantile Loss) é usada para avaliar a precisão de modelos de previsão probabilística, particularmente em quantiles. Quando você obtém um valor Avg. wQL de 0.035, isso indica que, em média, o modelo tem um erro ponderado de 0.035 ao prever os quantis.
 Baixo Valor (Próximo de 0): Indica que o modelo está fazendo previsões de quantil com alta precisão. Um valor de 0.035 sugere que o modelo está funcionando bem, com erros relativamente pequenos nas previsões dos quantis.
 
--   A métrica MAPE (Mean Absolute Percentage Error) é uma medida da precisão de um modelo de previsão. Ela é calculada como a média dos erros absolutos em termos percentuais, o que permite avaliar o desempenho do modelo independentemente da escala dos dados. Um MAPE de 1.574 indica que o modelo de previsão tem um erro percentual médio de 1.574%, o que geralmente é considerado insatisfatório na maioria dos contextos. Esse valor sugere que o modelo pode precisar de melhorias, como ajuste de hiperparâmetros, seleção de características, ou mudança na abordagem de modelagem.
+-   A métrica `MAPE` (Mean Absolute Percentage Error) é uma medida da precisão de um modelo de previsão. Ela é calculada como a média dos erros absolutos em termos percentuais, o que permite avaliar o desempenho do modelo independentemente da escala dos dados. Um MAPE de 1.574 indica que o modelo de previsão tem um erro percentual médio de 1.574%, o que geralmente é considerado insatisfatório na maioria dos contextos. Esse valor sugere que o modelo pode precisar de melhorias, como ajuste de hiperparâmetros, seleção de características, ou mudança na abordagem de modelagem.
 
--   A métrica WAPE (Weighted Absolute Percentage Error) é uma variante do MAPE (Mean Absolute Percentage Error) que leva em consideração a importância relativa de cada observação, ponderando os erros absolutos pela magnitude dos valores reais. Um WAPE de 0.044 indica que o modelo de previsão tem um erro absoluto médio ponderado de 4.4%, o que sugere que o modelo está performando bem. No entanto, a aceitação desse valor depende do contexto específico e dos requisitos de precisão do problema em questão. 
+-   A métrica `WAPE` (Weighted Absolute Percentage Error) é uma variante do MAPE (Mean Absolute Percentage Error) que leva em consideração a importância relativa de cada observação, ponderando os erros absolutos pela magnitude dos valores reais. Um WAPE de 0.044 indica que o modelo de previsão tem um erro absoluto médio ponderado de 4.4%, o que sugere que o modelo está performando bem. No entanto, a aceitação desse valor depende do contexto específico e dos requisitos de precisão do problema em questão. 
 
--   A métrica RMSE (Root Mean Squared Error) é uma medida da precisão de um modelo de previsão, especialmente utilizada para avaliar a diferença entre os valores previstos pelo modelo e os valores reais. Um RMSE de 9.107 significa que, em média, a magnitude dos erros de previsão é 9.107 unidades. Esse valor deve ser interpretado no contexto dos dados e das unidades específicas usadas. Se os valores reais são grandes, um RMSE de 9.107 pode ser aceitável, mas se os valores reais são pequenos, esse RMSE pode indicar um desempenho ruim.
+-   A métrica `RMSE` (Root Mean Squared Error) é uma medida da precisão de um modelo de previsão, especialmente utilizada para avaliar a diferença entre os valores previstos pelo modelo e os valores reais. Um RMSE de 9.107 significa que, em média, a magnitude dos erros de previsão é 9.107 unidades. Esse valor deve ser interpretado no contexto dos dados e das unidades específicas usadas. Se os valores reais são grandes, um RMSE de 9.107 pode ser aceitável, mas se os valores reais são pequenos, esse RMSE pode indicar um desempenho ruim.
+
+-   A métrica `MASE` (Mean Absolute Scaled Error) é utilizada para avaliar a precisão de previsões de séries temporais. Ela compara a média dos erros absolutos de previsão com a média dos erros absolutos de um método de previsão ingênuo. Se a MASE for igual a 0.000, isso significa que a previsão do modelo é perfeita e não há erro absoluto. Em outras palavras, as previsões feitas pelo modelo são exatamente iguais aos valores reais da série temporal. No entanto, uma MASE de 0.000 é muito rara em situações práticas e pode indicar algum problema, seja ele Overfitting, Problema nos Dados ou então Erro de Cálculo. Para garantir a validade da métrica, é importante revisar o código que calcula a MASE, verificar a integridade dos dados e garantir que o modelo não esteja superajustado aos dados de treinamento.
 
 
 ### 4. Prever
 
--   Use o modelo treinado para fazer previsões de estoque.
--   Exporte os resultados e analise as previsões geradas.
--   Documente suas conclusões e qualquer insight obtido a partir das previsões.
+-   Foi utilizado o modelo treinado para gerar a previsão que segue:
+![alt text](image-1.png)
+-   Com este modelo, qualquer uma das usinas poderiam ter sido escolhidas para analisarmos os resultados dos valores preditivos para geração de energia. No entanto, a fim de elucidar o modelo e as previsões, foi escolhida a usina eólica `conj. papagaios` como exemplo e as seguintes previsões foram obtidas:
+-   Demanda histórica: `37.112`. Este valor significa o valor real estraído dos dados para o período em que o modelo foi treinado.
+-   P10 (10º Percentil): `31.109`. Significa que 10% das previsões são menores ou iguais a este valor. Em termos práticos, isso indica um cenário otimista, onde as previsões têm 90% de chance de serem maiores que este valor.
+-   P50 (50º Percentil ou Mediana): `37.529`. Significa que 50% das previsões são menores ou iguais a este valor. Este é o valor mediano das previsões e indica o cenário "mais provável" ou "central".
+-   P90 (90º Percentil): `43.949` Significa que 90% das previsões são menores ou iguais a este valor. Em termos práticos, isso indica um cenário conservador, onde as previsões têm 10% de chance de serem maiores que este valor.
+
+
+-   Como melhoria, uma sugestão seria diminuir a quantidade de arquivos de dados utilizados na construção do modelo, tentar encontrar um resultado com uma série temporal menor e ver como as métricas se comportam. Acredito que a escolha de um menor período, trará uma predição mais assertiva e um modelo mais realista uma vez que algumas das métricas não se comportaram como o esperado.
+
 
 ## 🤔 Dúvidas?
 
